@@ -57,6 +57,7 @@ class VariBadWrapper(gym.Wrapper):
                                                                             rand_param_envs.gym.spaces.box.Box):
                 if len(self.observation_space.shape) > 1:
                     raise ValueError  # can't add additional info for obs of more than 1D
+                ## add one dim to the obs space which is done or not
                 self.observation_space = spaces.Box(low=np.array([*self.observation_space.low, 0]),
                                                     # shape will be deduced from this
                                                     high=np.array([*self.observation_space.high, 1])
@@ -108,7 +109,7 @@ class VariBadWrapper(gym.Wrapper):
 
     def reset_mdp(self):
         """ Resets the underlying MDP only (*not* the task). """
-        state = self.env.reset()
+        state = self.env.reset() ## this is only reset the MDP in the same task, different from self.reset() which is reset the task
         if self.add_done_info:
             state = np.concatenate((state, [0.0]))
         self.done_mdp = False

@@ -94,6 +94,7 @@ Another important parameter is the weight of the kl term (`--kl_weight`) in the 
 
 The MuJoCo results (smoothened learning curves) and a script to plot them 
 can be found [here](https://www.dropbox.com/sh/1bi7er3j67ylrkb/AADmgWwi4kbTwVNev3NQP_11a).
+
 ### Comments
 
 - When the flag `disable_metalearner` is activated, the file `learner.py` will be used instead of `metalearner.py`. 

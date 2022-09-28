@@ -173,6 +173,7 @@ class MetaLearner:
         for self.iter_idx in range(self.num_updates):
 
             # First, re-compute the hidden states given the current rollouts (since the VAE might've changed)
+            ## since they need to consider args.policy_num_steps != a full game
             with torch.no_grad():
                 latent_sample, latent_mean, latent_logvar, hidden_state = self.encode_running_trajectory()
 
@@ -184,6 +185,7 @@ class MetaLearner:
             self.policy_storage.latent_logvar.append(latent_logvar.clone())
 
             # rollout policies for a few steps
+            ## the full policy_storage will store #=args.policy_num_steps steps
             for step in range(self.args.policy_num_steps):
 
                 # sample actions from policy
@@ -275,7 +277,6 @@ class MetaLearner:
                                                   pretrain_index=self.iter_idx * self.args.num_vae_updates_per_pretrain + p)
                 # otherwise do the normal update (policy + vae)
                 else:
-
                     train_stats = self.update(state=prev_state,
                                               belief=belief,
                                               task=task,
@@ -289,6 +290,7 @@ class MetaLearner:
                         self.log(run_stats, train_stats, start_time)
 
             # clean up after update
+            ## only store buf to the vae.buf and update vae
             self.policy_storage.after_update()
 
         self.envs.close()
@@ -311,6 +313,7 @@ class MetaLearner:
                                                                                                        return_prior=True)
 
         # get the embedding / hidden state of the current time step (need to do this since we zero-padded)
+        ## do we really need this??
         latent_sample = (torch.stack([all_latent_samples[lens[i]][i] for i in range(len(lens))])).to(device)
         latent_mean = (torch.stack([all_latent_means[lens[i]][i] for i in range(len(lens))])).to(device)
         latent_logvar = (torch.stack([all_latent_logvars[lens[i]][i] for i in range(len(lens))])).to(device)

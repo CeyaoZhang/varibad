@@ -34,7 +34,7 @@ class HalfCheetahVelEnv(HalfCheetahEnv):
         xposbefore = self.sim.data.qpos[0]
         self.do_simulation(action, self.frame_skip)
         xposafter = self.sim.data.qpos[0]
-
+        
         forward_vel = (xposafter - xposbefore) / self.dt
         forward_reward = -1.0 * abs(forward_vel - self.goal_velocity)
         ctrl_cost = 0.5 * 1e-1 * np.sum(np.square(action))

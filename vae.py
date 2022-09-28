@@ -45,8 +45,7 @@ class VaribadVAE:
                                                  state_dim=self.args.state_dim,
                                                  action_dim=self.args.action_dim,
                                                  vae_buffer_add_thresh=self.args.vae_buffer_add_thresh,
-                                                 task_dim=self.task_dim
-                                                 )
+                                                 task_dim=self.task_dim)
 
         # initalise optimiser for the encoder and decoders
         decoder_params = []

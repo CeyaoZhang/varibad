@@ -54,6 +54,7 @@ class A2C:
         # get action values
         advantages = policy_storage.returns[:-1] - policy_storage.value_preds[:-1]
 
+        ## the key to the vae net to be update
         if rlloss_through_encoder:
             # re-compute encoding (to build the computation graph from scratch)
             utl.recompute_embeddings(policy_storage, encoder, sample=False, update_idx=0,
@@ -74,6 +75,7 @@ class A2C:
             actions_batch, latent_sample_batch, latent_mean_batch, latent_logvar_batch, value_preds_batch, \
             return_batch, old_action_log_probs_batch, adv_targ = sample
 
+            ## the key for vae net, after .detach() the gradient will not backpropogate to the vae net
             if not rlloss_through_encoder:
                 state_batch = state_batch.detach()
                 if latent_sample_batch is not None:
@@ -85,6 +87,7 @@ class A2C:
                                                      latent_mean=latent_mean_batch, latent_logvar=latent_logvar_batch
                                                      )
 
+            ## the key for the policy net, which will be update because the feedforward here
             values, action_log_probs, dist_entropy = \
                 self.actor_critic.evaluate_actions(state=state_batch, latent=latent_batch,
                                                    belief=belief_batch, task=task_batch,
@@ -119,6 +122,7 @@ class A2C:
             if rlloss_through_encoder:
                 self.optimiser_vae.step()
 
+        ## If vae is update with the RL loss, then this is not needed. Otherwise, update vae here.
         if (not rlloss_through_encoder) and (self.optimiser_vae is not None):
             for _ in range(self.args.num_vae_updates):
                 compute_vae_loss(update=True)

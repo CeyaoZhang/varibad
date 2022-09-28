@@ -23,6 +23,7 @@ class AntGoalEnv(AntEnv):
             np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
         survive_reward = 0.0
         reward = goal_reward - ctrl_cost - contact_cost + survive_reward
+
         state = self.state_vector()
         done = False
         ob = self._get_obs()

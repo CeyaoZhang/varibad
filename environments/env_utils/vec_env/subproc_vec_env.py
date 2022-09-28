@@ -97,6 +97,12 @@ class SubprocVecEnv(VecEnv):
             remote.send(('reset', task))
         return np.stack([remote.recv() for remote in self.remotes])
 
+    def reset_mdp(self):
+        self._assert_not_closed()
+        for remote in self.remotes:
+            remote.send(('reset_mdp', None))
+        return np.stack([remote.recv() for remote in self.remotes])
+
     def close_extras(self):
         self.closed = True
         if self.waiting:

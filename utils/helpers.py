@@ -128,7 +128,7 @@ def get_latent_for_policy(args, latent_sample=None, latent_mean=None, latent_log
 
 def update_encoding(encoder, next_obs, action, reward, done, hidden_state):
     # reset hidden state of the recurrent net when we reset the task
-    if done is not None:
+    if done is not None: # puzzle
         hidden_state = encoder.reset_hidden(hidden_state, done)
 
     with torch.no_grad():

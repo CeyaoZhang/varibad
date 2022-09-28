@@ -22,6 +22,7 @@ def make_env(env_id, seed, rank, episodes_per_task, tasks, add_done_info, **kwar
             env.seed(seed + rank)
         if str(env.__class__.__name__).find('TimeLimit') >= 0:
             env = TimeLimitMask(env)
+        ## reset() reset_mdp
         env = VariBadWrapper(env=env, episodes_per_task=episodes_per_task, add_done_info=add_done_info)
         return env
 
@@ -51,6 +52,7 @@ def make_vec_envs(env_name, seed, num_processes, gamma,
 
     if len(envs.observation_space.shape) == 1:
         if gamma is None:
+            ## two rewards
             envs = VecNormalize(envs, normalise_rew=normalise_rew, ret_rms=ret_rms)
         else:
             envs = VecNormalize(envs, normalise_rew=normalise_rew, ret_rms=ret_rms, gamma=gamma)
